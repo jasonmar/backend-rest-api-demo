@@ -1,15 +1,15 @@
 name := "backend-rest-api-demo"
 
-version := "1.0"
+version := "1.1"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.2"
 
-libraryDependencies += "com.typesafe.akka" % "akka-http_2.12" % "10.0.0"
+libraryDependencies += "com.typesafe.akka" %% "akka-http" % "10.0.7"
 
-libraryDependencies += "com.typesafe.akka" % "akka-http-spray-json_2.12" % "10.0.0"
+libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % "10.0.7"
 
-libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.11.67"
+libraryDependencies += "com.amazonaws" % "aws-java-sdk-dynamodb" % "1.11.136"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.12" % "3.0.1" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3" % "test"
 
 mainClass in (Compile, run) := Some("app.Main")
