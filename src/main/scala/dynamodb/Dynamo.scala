@@ -27,7 +27,7 @@ object Dynamo {
 
   def client(endpoint: Option[String] = None, region: Option[String] = None): AmazonDynamoDB = {
     AmazonDynamoDBClientBuilder.standard()
-      .withEndpointConfiguration(new EndpointConfiguration(endpoint.getOrElse(""), region.getOrElse("us-east-1")))
+      .withEndpointConfiguration(new EndpointConfiguration(endpoint.getOrElse("https://dynamodb.us-east-1.amazonaws.com"), region.getOrElse("us-east-1")))
       .withCredentials(new ProfileCredentialsProvider())
       .build()
   }

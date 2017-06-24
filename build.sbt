@@ -23,4 +23,4 @@ libraryDependencies += "com.google.apis" % "google-api-services-calendar" % "v3-
 // Test
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3" % "test"
 
-mainClass in (Compile, run) := Some("app.QuickStart")
+mainClass in (Compile, run) := Some("app.Main")
