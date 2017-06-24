@@ -22,34 +22,22 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
-import scala.concurrent.duration._
-
-import scala.concurrent.{ExecutionContext, Future}
-import app.Schema._
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import scala.concurrent.ExecutionContext
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-
-import scala.util._
 
 object Routing {
 
-  val idPath = "id"
-  val docPath = "doc"
-
-  /**
-    * http://doc.akka.io/docs/akka-http/current/scala/http/introduction.html#routing-dsl-for-http-servers
-    */
   def mainRoute(db: AmazonDynamoDB)(implicit sys: ActorSystem, mat: Materializer, dis: ExecutionContext): Route = {
     decodeRequestWith(Gzip,NoCoding){
       encodeResponseWith(NoCoding,Gzip){
         get{
-          pathPrefix(Segment){id =>
+          pathPrefix("sms" / Segment){id =>
             onSuccess(Summary.summarize(id)){summary =>
               complete(
                 StatusCodes.OK,
                 HttpEntity(
                   MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage(summary)
+                  Twilio.respondWithMessage(summary.sm_api_content)
                 )
               )
             }
@@ -57,13 +45,13 @@ object Routing {
         }~
         post{
           pathPrefix("sms"){
-            entity(as[String]) {json =>
-              onSuccess(Summary.summarize(json)) { summary =>
+            entity(as[String]){json =>
+              onSuccess(Summary.summarize(json)){summary =>
                 complete(
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary)
+                    Twilio.respondWithMessage(summary.sm_api_content)
                   )
                 )
               }
@@ -76,7 +64,7 @@ object Routing {
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary)
+                    Twilio.respondWithMessage(summary.sm_api_content)
                   )
                 )
               }
