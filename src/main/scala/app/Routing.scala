@@ -44,29 +44,42 @@ object Routing {
       encodeResponseWith(NoCoding,Gzip){
         get{
           pathPrefix(Segment){id =>
-            entity(as[String]) {json =>
-              System.out.println(json)
+            onSuccess(Summary.summarize(id)){summary =>
               complete(
                 StatusCodes.OK,
                 HttpEntity(
                   MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage("this is a text message for GET")
+                  Twilio.respondWithMessage(summary)
                 )
               )
             }
           }
         }~
         post{
+          pathPrefix("sms"){
+            entity(as[String]) {json =>
+              onSuccess(Summary.summarize(json)) { summary =>
+                complete(
+                  StatusCodes.OK,
+                  HttpEntity(
+                    MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
+                    Twilio.respondWithMessage(summary)
+                  )
+                )
+              }
+            }
+          }~
           pathPrefix(Segment){id =>
             entity(as[String]) {json =>
-              System.out.println(json)
-              complete(
-                StatusCodes.OK,
-                HttpEntity(
-                  MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage("this is a text message for GET")
+              onSuccess(Summary.summarize(id)) { summary =>
+                complete(
+                  StatusCodes.OK,
+                  HttpEntity(
+                    MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
+                    Twilio.respondWithMessage(summary)
+                  )
                 )
-              )
+              }
             }
           }
         }
