@@ -37,7 +37,7 @@ object Routing {
                 StatusCodes.OK,
                 HttpEntity(
                   MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage(summary.sm_api_content)
+                  Twilio.respondWithMessage(summary.sm_api_content.getOrElse("unable to summarize"))
                 )
               )
             }
@@ -51,7 +51,7 @@ object Routing {
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary.sm_api_content)
+                    Twilio.respondWithMessage(summary.sm_api_content.getOrElse("unable to summarize"))
                   )
                 )
               }
@@ -64,7 +64,7 @@ object Routing {
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary.sm_api_content)
+                    Twilio.respondWithMessage(summary.sm_api_content.getOrElse("unable to summarize"))
                   )
                 )
               }
