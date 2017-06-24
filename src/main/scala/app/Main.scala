@@ -22,8 +22,6 @@ import akka.http.scaladsl._
 import com.amazonaws.services.dynamodbv2.document.DynamoDB
 import dynamodb.Dynamo
 
-import scala.util.Try
-
 object Main extends App {
   implicit val sys = ActorSystem()
   implicit val mat = ActorMaterializer()

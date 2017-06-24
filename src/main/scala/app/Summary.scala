@@ -16,12 +16,12 @@ object Summary {
 
   // http://smmry.com/api
   case class SmmryResponse(
-    sm_api_message: String, // Contains notices, warnings, and error messages.
-    sm_api_character_count: String, // Contains the amount of characters returned
-    sm_api_title: String, // Contains the title when available
-    sm_api_content: String, // Contains the summary
-    sm_api_keyword_array: String, // Contains top ranked keywords in descending order
-    sm_api_error: String
+    sm_api_message: Option[String], // Contains notices, warnings, and error messages.
+    sm_api_character_count: Option[String], // Contains the amount of characters returned
+    sm_api_title: Option[String], // Contains the title when available
+    sm_api_content: Option[String], // Contains the summary
+    sm_api_keyword_array: Option[String], // Contains top ranked keywords in descending order
+    sm_api_error: Option[String]
   )
 
   object MyJsonProtocol extends SprayJsonSupport with DefaultJsonProtocol {
