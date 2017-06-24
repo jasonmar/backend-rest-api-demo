@@ -22,6 +22,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
+import scala.concurrent.duration._
 
 import scala.concurrent.{ExecutionContext, Future}
 import app.Schema._
@@ -42,97 +43,18 @@ object Routing {
     decodeRequestWith(Gzip,NoCoding){
       encodeResponseWith(NoCoding,Gzip){
         get{
-          pathPrefix(idPath / Segment){id =>
-            // Retrieve a specific Id from DynamoDB using the Partition Key
-            // This should be a fast operation
-            val getId = Future(Try(Persistence.getId(db, id))) // Wrap in a Try to capture exceptions
-            onSuccess(getId) {
-              case Success(Some(item)) =>
-                complete(item)
-              case Success(None) => // Request was successful but there was no item returned
-                complete(StatusCodes.NotFound)
-              case Failure(e) => // An exception was caught, print it and respond with an Http error
-                e.printStackTrace(System.err)
-                complete(StatusCodes.InternalServerError)
-            }
-          }~
-          pathPrefix(docPath / Segment / Segment){ (id, num) =>
-            // Retrieve a specific Document from DynamoDB using the Partition Key and Sort Key
-            // This should be a fast operation
-            val getDoc = Future(Try(Persistence.getDoc(db, id, num))) // Wrap in a Try to capture exceptions
-            onSuccess(getDoc) {
-              case Success(Some(item)) =>
-                complete(item)
-              case Success(None) => // Request was successful but there was no item returned
-                complete(StatusCodes.NotFound)
-              case Failure(e) => // An exception was caught, print it and respond with an Http error
-                e.printStackTrace(System.err)
-                complete(StatusCodes.InternalServerError)
-            }
-          }~
-          pathPrefix(idPath){
-            // List Ids in ids table
-            val scanIds = Future(Try(Scan.ids(db)))
-            onSuccess(scanIds) {
-              case Success(Some(item)) =>
-                complete(item)
-              case Success(None) =>
-                complete(StatusCodes.NotFound)
-              case Failure(e) =>
-                e.printStackTrace(System.err)
-                complete(StatusCodes.InternalServerError)
-            }
-          }~
-          pathPrefix(docPath){
-            // List documents in docs table
-            val scanDocs = Future(Try(Scan.docs(db)))
-            onSuccess(scanDocs) {
-              case Success(Some(item)) =>
-                complete(item)
-              case Success(None) =>
-                complete(StatusCodes.NotFound)
-              case Failure(e) =>
-                e.printStackTrace(System.err)
-                complete(StatusCodes.InternalServerError)
+          pathPrefix(Segment){id =>
+            entity(as[String]) {json =>
+              System.out.println(json)
+              complete(Twilio.respondWithMessage("this is a text message for GET"))
             }
           }
         }~
         post{
-          pathPrefix(idPath){
-            entity(as[Id]){id => // Use SprayJsonSupport to create Id object
-              val postId = Future(Try(Persistence.postId(db, id)))
-              onSuccess(postId) {
-                case Success(_) =>
-                  complete(StatusCodes.OK)
-                case Failure(e) =>
-                  e.printStackTrace(System.err)
-                  complete(StatusCodes.InternalServerError)
-              }
-            }
-          }~
-          pathPrefix(docPath){
-            entity(as[Document]){document => // Use SprayJsonSupport to create Id object
-              val postDocument = Future{
-                // First attempt to retrieve the Id
-                Try(Persistence.getId(db, document.par)) match {
-                  case Success(Some(_)) =>
-                    // Allow the request to proceed if Id exists
-                    Try(Persistence.postDocument(db, document))
-                  case _ =>
-                    // If the Id is not found then the request fails
-                    Failure(new Persistence.MissingKeyException(s"Id ${document.par} doesn't exist"))
-                }
-              }
-              onSuccess(postDocument) {
-                case Success(_) =>
-                  complete(StatusCodes.OK)
-                case Failure(e: Persistence.MissingKeyException) => // Special failure case here where Id didn't exist
-                  // Don't print the exception since it is known to be the user's fault
-                  complete(StatusCodes.BadRequest)
-                case Failure(e) =>
-                  e.printStackTrace(System.err)
-                  complete(StatusCodes.InternalServerError)
-              }
+          pathPrefix(Segment){id =>
+            entity(as[String]) {json =>
+              System.out.println(json)
+              complete(Twilio.respondWithMessage("this is a text message for POST"))
             }
           }
         }
