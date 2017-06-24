@@ -30,17 +30,13 @@ object Main extends App {
   implicit val dispatch = sys.dispatcher
 
   System.out.println("creating dynamoDB client")
-  val client = Dynamo.client(endpoint = Some("http://localhost:8000"))
+  val client = Dynamo.client()
   val db = new DynamoDB(client)
-
-  System.out.println("creating tables")
-  Try(Schema.IdTable.create(db))
-  Try(Schema.DocsTable.create(db))
 
   System.out.println("starting server")
   val server = Http().bindAndHandle(
     handler = Routing.mainRoute(client),
-    interface = "localhost",
+    interface = "*",
     port = 8080
   )
 

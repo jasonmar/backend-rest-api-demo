@@ -17,24 +17,18 @@
 package dynamodb
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClient}
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
+import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
 
 object Dynamo {
   trait AWSSDKObjectBuilder {
     def result(): Any
   }
 
-  class ImprovedAmazonDynamoDBClient(c: AmazonDynamoDBClient){
-    def withEndpointOpt(endpointOpt: Option[String]): AmazonDynamoDB = {
-      endpointOpt match {
-        case Some(endpoint) => c.withEndpoint(endpoint)
-        case _ => c
-      }
-    }
-  }
-  implicit def improveAmazonDynamoDB(c: AmazonDynamoDBClient): ImprovedAmazonDynamoDBClient = new ImprovedAmazonDynamoDBClient(c)
-
-  def client(endpoint: Option[String] = None): AmazonDynamoDB = {
-    new AmazonDynamoDBClient(new ProfileCredentialsProvider()).withEndpointOpt(endpoint)
+  def client(endpoint: Option[String] = None, region: Option[String] = None): AmazonDynamoDB = {
+    AmazonDynamoDBClientBuilder.standard()
+      .withEndpointConfiguration(new EndpointConfiguration(endpoint.getOrElse(""), region.getOrElse("us-east-1")))
+      .withCredentials(new ProfileCredentialsProvider())
+      .build()
   }
 }
