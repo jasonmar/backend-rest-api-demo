@@ -32,9 +32,10 @@ object Summary {
     System.out.println(uri)
     val httpRequest = HttpRequest(uri = s"${BASE_URI}${uri}")
     val futureResponse: Future[HttpResponse] = Http().singleRequest(httpRequest)
+
     import MyJsonProtocol._
     futureResponse.flatMap[SmmryResponse](r =>
-      Unmarshal(r.entity).to[SmmryResponse]
+      Unmarshal(r.entity).to[String].map(_.parseJson.convertTo[SmmryResponse])
     )
   }
 }
