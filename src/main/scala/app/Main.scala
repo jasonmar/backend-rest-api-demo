@@ -36,7 +36,7 @@ object Main extends App {
   System.out.println("starting server")
   val server = Http().bindAndHandle(
     handler = Routing.mainRoute(client),
-    interface = "*",
+    interface = "0.0.0.0",
     port = 8080
   )
 
