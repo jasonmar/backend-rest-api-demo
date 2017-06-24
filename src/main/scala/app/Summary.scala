@@ -28,14 +28,14 @@ object Summary {
     implicit val fmt = jsonFormat6(SmmryResponse)
   }
 
-  def summarize(uri: String)(implicit mat: Materializer, ec: ExecutionContext, system: akka.actor.ActorSystem): Future[SmmryResponse] = {
+  def summarize(uri: String)(implicit mat: Materializer, ec: ExecutionContext, system: akka.actor.ActorSystem): Future[String] = {
     System.out.println(uri)
     val httpRequest = HttpRequest(uri = s"${BASE_URI}${uri}")
     val futureResponse: Future[HttpResponse] = Http().singleRequest(httpRequest)
 
     import MyJsonProtocol._
-    futureResponse.flatMap[SmmryResponse](r =>
-      Unmarshal(r.entity).to[String].map(_.parseJson.convertTo[SmmryResponse])
+    futureResponse.flatMap[String](r =>
+      Unmarshal(r.entity).to[String]
     )
   }
 }
