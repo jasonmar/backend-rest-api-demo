@@ -46,7 +46,13 @@ object Routing {
           pathPrefix(Segment){id =>
             entity(as[String]) {json =>
               System.out.println(json)
-              complete(Twilio.respondWithMessage("this is a text message for GET"))
+              complete(
+                StatusCodes.OK,
+                HttpEntity(
+                  MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
+                  Twilio.respondWithMessage("this is a text message for GET")
+                )
+              )
             }
           }
         }~
@@ -54,7 +60,13 @@ object Routing {
           pathPrefix(Segment){id =>
             entity(as[String]) {json =>
               System.out.println(json)
-              complete(Twilio.respondWithMessage("this is a text message for POST"))
+              complete(
+                StatusCodes.OK,
+                HttpEntity(
+                  MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
+                  Twilio.respondWithMessage("this is a text message for GET")
+                )
+              )
             }
           }
         }
