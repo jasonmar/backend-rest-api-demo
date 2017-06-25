@@ -22,10 +22,13 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.Materializer
+
 import scala.concurrent.ExecutionContext
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import scala.concurrent.duration._
 
 object Routing {
+  val XML_CONTENT_TYPE: ContentType.WithCharset = MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`)
 
   def mainRoute(db: AmazonDynamoDB)(implicit sys: ActorSystem, mat: Materializer, dis: ExecutionContext): Route = {
     decodeRequestWith(Gzip,NoCoding){
@@ -37,16 +40,14 @@ object Routing {
         }~
         post{
           pathPrefix("sms"){
-            entity(as[String]){e =>
-              System.out.println(e)
-              onSuccess(Summary.summarize(e)){summary =>
-                complete(
-                  StatusCodes.OK,
-                  HttpEntity(
-                    MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary.toString)
-                  )
-                )
+            // https://github.com/akka/akka-http/issues/1177
+            toStrictEntity(2.seconds){
+              // http://doc.akka.io/docs/akka-http/10.0.7/scala/http/routing-dsl/directives/form-field-directives/formFields.html
+              formFields('Body, 'From, 'To){(body, from, to) =>
+                onSuccess(Summary.summarize(body)){summary =>
+                  val twiml = Twilio.messageTwiml(summary.toString)
+                  complete(HttpResponse(entity = HttpEntity(XML_CONTENT_TYPE, twiml)))
+                }
               }
             }
           }
