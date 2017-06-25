@@ -2,7 +2,7 @@ package app
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.model.{HttpEntity, HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import spray.json._

@@ -29,13 +29,14 @@ import scala.concurrent.duration._
 
 object Routing {
   val XML_CONTENT_TYPE: ContentType.WithCharset = MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`)
+  val HTML_CONTENT_TYPE: ContentType.WithCharset = MediaTypes.`text/html`.toContentType(HttpCharsets.`UTF-8`)
 
   def mainRoute(db: AmazonDynamoDB)(implicit sys: ActorSystem, mat: Materializer, dis: ExecutionContext): Route = {
     decodeRequestWith(Gzip,NoCoding){
       encodeResponseWith(NoCoding,Gzip){
         get{
           pathEndOrSingleSlash{
-            complete(StatusCodes.OK)
+            getFromResource("index.htm", HTML_CONTENT_TYPE)
           }
         }~
         post{
