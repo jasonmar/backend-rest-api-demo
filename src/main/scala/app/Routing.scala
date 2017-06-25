@@ -30,6 +30,7 @@ import scala.concurrent.duration._
 object Routing {
   val XML_CONTENT_TYPE: ContentType.WithCharset = MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`)
   val HTML_CONTENT_TYPE: ContentType.WithCharset = MediaTypes.`text/html`.toContentType(HttpCharsets.`UTF-8`)
+  val JSON_CONTENT_TYPE: ContentType.WithFixedCharset = MediaTypes.`application/json`
 
   def mainRoute(db: AmazonDynamoDB)(implicit sys: ActorSystem, mat: Materializer, dis: ExecutionContext): Route = {
     decodeRequestWith(Gzip,NoCoding){
@@ -48,6 +49,20 @@ object Routing {
                 onSuccess(Summary.summarize(body)){summary =>
                   val twiml = Twilio.messageTwiml(summary.toString)
                   complete(HttpResponse(entity = HttpEntity(XML_CONTENT_TYPE, twiml)))
+                }
+              }
+            }
+          }~
+          pathPrefix("submit"){
+            toStrictEntity(2.seconds){
+              formFields('Body, 'From, 'To){(body, from, to) =>
+                onSuccess(Summary.summarize(body)){summary =>
+                  val bearerToken = scala.sys.env.getOrElse("BEARER_TOKEN", "")
+                  val sectionId = scala.sys.env.getOrElse("SECTION_ID", "")
+                  onSuccess(OneNote.newSection(sectionId, summary.toString, bearerToken)){response =>
+                    //val twiml = Twilio.messageTwiml(summary.toString)
+                    complete(HttpResponse(entity = HttpEntity(JSON_CONTENT_TYPE, string = response)))
+                  }
                 }
               }
             }

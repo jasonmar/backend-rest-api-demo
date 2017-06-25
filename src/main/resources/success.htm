@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Cardo" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            body { background-size: cover; }
+            #link { width: 30%; }
+            input[type="text"] { position: relative; display: block; margin: 0 auto; }
+            #header h1 { font-size: 100px; font-family: 'Lobster', cursive; }
+            #text1 { font-family: 'Cardo', serif; }
+            #text2 { font-family: 'Cardo', serif; }
+            #button { font-family: 'Lobster', cursive; }
+            </style>
+    </head>
+    <body background="https://s3.amazonaws.com/tldr-rocks/bg1.jpg">
+        <div class="page-header text-center" id="header">
+            <h1>TL;DR</h1>
+        </div>
+        <div class="container text-center">
+            <h4 id="text1">Link</h4>
+            <input type="text" name="Body" value="${LINK_URI}">
+            <h4 id="text2">Content Summary</h4>
+            <p id="summary">${SUMMARY_TEXT}</p>
+            <br /><br />
+        </div>
+    </body>
+</html>
