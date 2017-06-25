@@ -37,7 +37,7 @@ object Routing {
                 StatusCodes.OK,
                 HttpEntity(
                   MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage(summary)
+                  Twilio.respondWithMessage(summary.toString)
                 )
               )
             }
@@ -51,7 +51,7 @@ object Routing {
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary)
+                    Twilio.respondWithMessage(summary.toString)
                   )
                 )
               }
@@ -64,7 +64,7 @@ object Routing {
                   StatusCodes.OK,
                   HttpEntity(
                     MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary)
+                    Twilio.respondWithMessage(summary.toString)
                   )
                 )
               }
