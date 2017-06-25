@@ -17,7 +17,7 @@ object Summary {
   // http://smmry.com/api
   case class SmmryResponse(
     sm_api_message: Option[String] = None, // Contains notices, warnings, and error messages.
-    sm_api_character_count: Option[Int] = None, // Contains the amount of characters returned
+    sm_api_character_count: Option[String] = None, // Contains the amount of characters returned
     sm_api_title: Option[String] = None, // Contains the title when available
     sm_api_content: Option[String] = None, // Contains the summary
     sm_api_keyword_array: Option[String] = None, // Contains top ranked keywords in descending order
