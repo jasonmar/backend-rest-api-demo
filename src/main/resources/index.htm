@@ -11,7 +11,7 @@
         body { background-size: cover; }
         #link { width: 30%; }
         input[type="text"] { position: relative; display: block; margin: 0 auto; }
-        #header { font-size: 100px; font-family: 'Lobster', cursive; }
+        #header h1 { font-size: 100px; font-family: 'Lobster', cursive; }
         #text1 { font-family: 'Cardo', serif; }
         #text2 { font-family: 'Cardo', serif; }
         #button { font-family: 'Lobster', cursive; }
@@ -19,15 +19,17 @@
     </head>
     <body background="https://s3.amazonaws.com/tldr-rocks/bg1.jpg">
         <div class="page-header text-center" id="header">
-            <p>TL;DR</p>
+            <h1>TL;DR</h1>
         </div>
-
         <div class="container text-center">
-            <h4 id="text1">Enter the link to summarize</h4>
-            <input type="text" id="link">
-            <h4 id="text2">Enter the cell number to send a text summary</h4>
-            <input type="text" id="phonenumber"> <br><br>
-            <button type="button" class="btn btn-default btn-lg" id="button">Submit</button>
+            <form action="/sms">
+                <h4 id="text1">Enter the link to summarize</h4>
+                <input type="text" id="Body">
+                <h4 id="text2">Enter the cell number to send a text summary</h4>
+                <input type="text" id="From" value="+19172688696" /><br><br>
+                <input type="hidden" id="To" value="+19172688696" /><br><br>
+                <button type="button" class="btn btn-default btn-lg" id="button" onclick="submit">Submit</button>
+            </form>
         </div>
     </body>
 </html>
