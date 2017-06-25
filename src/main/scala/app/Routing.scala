@@ -31,35 +31,15 @@ object Routing {
     decodeRequestWith(Gzip,NoCoding){
       encodeResponseWith(NoCoding,Gzip){
         get{
-          pathPrefix("sms" / Segment){id =>
-            onSuccess(Summary.summarize(id)){summary =>
-              complete(
-                StatusCodes.OK,
-                HttpEntity(
-                  MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                  Twilio.respondWithMessage(summary.toString)
-                )
-              )
-            }
+          pathEndOrSingleSlash{
+            complete(StatusCodes.OK)
           }
         }~
         post{
           pathPrefix("sms"){
-            entity(as[String]){json =>
-              onSuccess(Summary.summarize(json)){summary =>
-                complete(
-                  StatusCodes.OK,
-                  HttpEntity(
-                    MediaTypes.`application/xml`.toContentType(HttpCharsets.`UTF-8`),
-                    Twilio.respondWithMessage(summary.toString)
-                  )
-                )
-              }
-            }
-          }~
-          pathPrefix(Segment){id =>
-            entity(as[String]) {json =>
-              onSuccess(Summary.summarize(id)) { summary =>
+            entity(as[String]){e =>
+              System.out.println(e)
+              onSuccess(Summary.summarize(e)){summary =>
                 complete(
                   StatusCodes.OK,
                   HttpEntity(
